@@ -18,6 +18,7 @@ const ENTRY =
  * - exactly two lines (split on "\n", no "\r")
  * - neither line only whitespace
  * - no leading or trailing whitespace overall
+ * - each line is a single sentence (exactly one sentence-ending period)
  */
 export function validateEntry(text: string): void {
   const codePoints = [...text];
@@ -36,6 +37,12 @@ export function validateEntry(text: string): void {
   for (const [index, line] of lines.entries()) {
     if (line.trim().length === 0) {
       throw new Error(`line ${index + 1} must not be only whitespace`);
+    }
+    const periods = [...line].filter((ch) => ch === ".").length;
+    if (periods !== 1) {
+      throw new Error(
+        `line ${index + 1} must be a single sentence with exactly one period, got ${periods}`,
+      );
     }
   }
   if (text !== text.trim()) {
